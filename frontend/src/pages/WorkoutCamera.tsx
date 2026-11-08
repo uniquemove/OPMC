@@ -984,15 +984,19 @@ export const WorkoutCamera: React.FC = () => {
             {/* Nút bật Camera Full Màn Hình nhanh */}
             <button
               onClick={toggleFullscreen}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap flex-shrink-0 transition-all cursor-pointer ${
                 isFullscreen
                   ? 'bg-amber-500 text-black shadow-md'
                   : 'bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30'
               }`}
               title={isFullscreen ? 'Thu nhỏ camera' : 'Bật camera toàn màn hình'}
             >
-              {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
-              <span>{isFullscreen ? 'Thu Nhỏ' : '📱 Full Màn Hình'}</span>
+              {isFullscreen ? (
+                <Minimize2 className="w-3.5 h-3.5 flex-shrink-0" />
+              ) : (
+                <Maximize2 className="w-3.5 h-3.5 flex-shrink-0" />
+              )}
+              <span className="whitespace-nowrap">{isFullscreen ? 'Thu Nhỏ' : 'Full Màn Hình'}</span>
             </button>
           </div>
         </div>
@@ -1060,30 +1064,30 @@ export const WorkoutCamera: React.FC = () => {
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 pt-2">
                 <button
                   onClick={startStreaming}
-                  className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-gradient-to-r from-red-600 to-amber-500 hover:opacity-90 text-white font-black text-sm sm:text-base shadow-lg shadow-red-600/30 transition-all cursor-pointer"
+                  className="inline-flex items-center space-x-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-red-600 to-amber-500 hover:opacity-90 text-white font-black text-sm sm:text-base shadow-lg shadow-red-600/30 whitespace-nowrap flex-shrink-0 transition-all cursor-pointer"
                 >
-                  <Play className="w-5 h-5 fill-white" />
-                  <span>Bật Camera & Bắt Đầu</span>
+                  <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-white flex-shrink-0" />
+                  <span className="whitespace-nowrap">Bật Camera & Bắt Đầu</span>
                 </button>
 
                 <button
                   onClick={handleStartFullscreen}
-                  className="inline-flex items-center space-x-2 px-5 py-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-black text-sm sm:text-base border border-amber-500/50 shadow-lg shadow-amber-500/10 transition-all cursor-pointer"
-                  title="Bật camera và tự động tràn toàn màn hình điện thoại"
+                  className="inline-flex items-center space-x-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-black text-sm sm:text-base border border-amber-500/50 shadow-lg shadow-amber-500/10 whitespace-nowrap flex-shrink-0 transition-all cursor-pointer"
+                  title="Bật camera và tự động tràn toàn màn hình"
                 >
-                  <Maximize2 className="w-5 h-5" />
-                  <span>📱 Bật Cam Full Màn Hình</span>
+                  <Maximize2 className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                  <span className="whitespace-nowrap">Bật Cam Full Màn Hình</span>
                 </button>
 
                 <button
                   onClick={handleTestRep}
-                  className="inline-flex items-center space-x-2 px-4 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-amber-400 font-bold text-xs sm:text-sm border border-gray-700 transition-all cursor-pointer"
+                  className="inline-flex items-center space-x-1.5 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-amber-400 font-bold text-xs sm:text-sm border border-gray-700 whitespace-nowrap flex-shrink-0 transition-all cursor-pointer"
                 >
-                  <Plus className="w-4 h-4" />
-                  <span>Test Nhanh (+1 Rep)</span>
+                  <Plus className="w-4 h-4 flex-shrink-0" />
+                  <span className="whitespace-nowrap">Test Nhanh (+1 Rep)</span>
                 </button>
               </div>
             </div>
@@ -1123,19 +1127,19 @@ export const WorkoutCamera: React.FC = () => {
                   >
                     {viewMode === 'contain' ? (
                       <>
-                        <Expand className="w-3.5 h-3.5 text-amber-400" />
-                        <span className="text-[11px]">Tràn Viền</span>
+                        <Expand className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                        <span className="text-[11px] whitespace-nowrap">Tràn Viền</span>
                       </>
                     ) : (
                       <>
-                        <Shrink className="w-3.5 h-3.5 text-emerald-400" />
-                        <span className="text-[11px]">Vừa Khung</span>
+                        <Shrink className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                        <span className="text-[11px] whitespace-nowrap">Vừa Khung</span>
                       </>
                     )}
                   </button>
 
                   {/* Zoom Controls (- 1.0x +) */}
-                  <div className="hidden sm:flex items-center bg-black/80 backdrop-blur-md px-1.5 py-1 rounded-full border border-white/10 text-xs">
+                  <div className="hidden sm:flex items-center bg-black/80 backdrop-blur-md px-1.5 py-1 rounded-full border border-white/10 text-xs whitespace-nowrap flex-shrink-0">
                     <button
                       onClick={handleZoomOut}
                       className="p-1 hover:text-amber-400 text-gray-300 transition-colors"
@@ -1162,16 +1166,16 @@ export const WorkoutCamera: React.FC = () => {
                   {/* Switch Front / Back Camera */}
                   <button
                     onClick={toggleCameraFacing}
-                    className="p-1.5 sm:p-2 rounded-full bg-black/80 backdrop-blur-md border border-white/10 text-white hover:text-amber-400 hover:bg-gray-800 transition-all cursor-pointer"
+                    className="p-1.5 sm:p-2 rounded-full bg-black/80 backdrop-blur-md border border-white/10 text-white hover:text-amber-400 hover:bg-gray-800 whitespace-nowrap flex-shrink-0 transition-all cursor-pointer"
                     title="Đổi camera trước / sau (Góc rộng)"
                   >
-                    <SwitchCamera className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <SwitchCamera className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
                   </button>
 
                   {/* Theater / Fullscreen toggle button */}
                   <button
                     onClick={toggleFullscreen}
-                    className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full border text-xs font-bold transition-all cursor-pointer ${
+                    className={`flex items-center space-x-1 px-2.5 sm:px-3 py-1.5 rounded-full border text-xs font-bold whitespace-nowrap flex-shrink-0 transition-all cursor-pointer ${
                       isFullscreen
                         ? 'bg-red-600 hover:bg-red-500 text-white border-red-500 shadow-lg'
                         : 'bg-amber-500/25 hover:bg-amber-500/40 text-amber-300 border-amber-500/50 shadow-md'
@@ -1180,13 +1184,13 @@ export const WorkoutCamera: React.FC = () => {
                   >
                     {isFullscreen ? (
                       <>
-                        <Minimize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                        <span className="text-[11px]">Thu Nhỏ</span>
+                        <Minimize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                        <span className="text-[11px] whitespace-nowrap font-bold">Thu Nhỏ</span>
                       </>
                     ) : (
                       <>
-                        <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                        <span className="text-[11px]">Full Cam</span>
+                        <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                        <span className="text-[11px] whitespace-nowrap font-bold">Full Màn</span>
                       </>
                     )}
                   </button>
@@ -1196,8 +1200,8 @@ export const WorkoutCamera: React.FC = () => {
               {/* Prominent Exercise Badge & Rep Depth */}
               <div className="absolute top-14 sm:top-16 left-3 sm:left-5 pointer-events-none space-y-2">
                 {/* Active Exercise Indicator */}
-                <div className="bg-red-600/90 text-white px-3 py-1 rounded-lg text-xs font-black tracking-wide shadow-lg inline-flex items-center space-x-1.5">
-                  <span>{exercise === 'pushup' ? '💪 CHỐNG ĐẨY' : exercise === 'squat' ? '🏋️ SQUAT' : '🔥 GẬP BỤNG'}</span>
+                <div className="bg-red-600/90 text-white px-3 py-1 rounded-lg text-xs font-black tracking-wide shadow-lg inline-flex items-center space-x-1.5 whitespace-nowrap">
+                  <span>{exercise === 'pushup' ? 'CHỐNG ĐẨY' : exercise === 'squat' ? 'SQUAT' : 'GẬP BỤNG'}</span>
                 </div>
 
                 {/* Huge Rep Counter for 2m+ Viewing Distance */}
@@ -1254,25 +1258,25 @@ export const WorkoutCamera: React.FC = () => {
                   </button>
                   <button
                     onClick={resetCounter}
-                    className="p-2.5 sm:p-3 rounded-xl bg-gray-900/90 hover:bg-gray-800 text-white backdrop-blur border border-gray-700 transition-all cursor-pointer"
+                    className="p-2 sm:p-2.5 rounded-xl bg-gray-900/90 hover:bg-gray-800 text-white backdrop-blur border border-gray-700 transition-all flex-shrink-0 cursor-pointer"
                     title="Reset Reps"
                   >
-                    <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <RefreshCw className="w-4 h-4 flex-shrink-0" />
                   </button>
                   <button
                     onClick={handleTestRep}
-                    className="inline-flex items-center space-x-1 px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold transition-all cursor-pointer"
+                    className="inline-flex items-center space-x-1 px-2.5 sm:px-3 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold whitespace-nowrap flex-shrink-0 transition-all cursor-pointer"
                     title="Test nhanh +1 Rep"
                   >
-                    <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    <span>+1 Rep</span>
+                    <Plus className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span className="whitespace-nowrap font-bold">+1 Rep</span>
                   </button>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-1.5 sm:space-x-2 flex-shrink-0">
                   <button
                     onClick={toggleFullscreen}
-                    className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl font-bold text-xs border transition-all cursor-pointer ${
+                    className={`flex items-center space-x-1.5 px-2.5 sm:px-3.5 py-2 rounded-xl font-bold text-xs border whitespace-nowrap flex-shrink-0 transition-all cursor-pointer ${
                       isFullscreen
                         ? 'bg-red-600/90 hover:bg-red-600 text-white border-red-500 shadow-lg'
                         : 'bg-gray-900/90 hover:bg-gray-800 text-amber-300 border-amber-500/40 shadow-sm'
@@ -1281,13 +1285,13 @@ export const WorkoutCamera: React.FC = () => {
                   >
                     {isFullscreen ? (
                       <>
-                        <Minimize2 className="w-3.5 h-3.5" />
-                        <span>Thoát Full</span>
+                        <Minimize2 className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span className="whitespace-nowrap font-bold">Thoát Full</span>
                       </>
                     ) : (
                       <>
-                        <Maximize2 className="w-3.5 h-3.5" />
-                        <span>📱 Full Màn</span>
+                        <Maximize2 className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span className="whitespace-nowrap font-bold">Full Màn</span>
                       </>
                     )}
                   </button>
@@ -1295,10 +1299,10 @@ export const WorkoutCamera: React.FC = () => {
                   <button
                     onClick={saveWorkout}
                     disabled={status.valid_reps === 0}
-                    className="flex items-center space-x-1.5 sm:space-x-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-90 disabled:opacity-40 text-black font-black text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
+                    className="flex items-center space-x-1.5 px-3 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-90 disabled:opacity-40 text-black font-black text-xs sm:text-sm shadow-lg shadow-amber-500/20 whitespace-nowrap flex-shrink-0 transition-all cursor-pointer"
                   >
-                    <Save className="w-4 h-4" />
-                    <span>Lưu Kết Quả</span>
+                    <Save className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+                    <span className="whitespace-nowrap">Lưu Kết Quả</span>
                   </button>
                 </div>
               </div>
