@@ -69,14 +69,32 @@ export const DownloadAppModal: React.FC<DownloadAppModalProps> = ({ isOpen, onCl
           </p>
         </div>
 
-        {/* Action Button */}
-        <div className="pt-2">
+        {/* Action Buttons */}
+        <div className="pt-2 space-y-2">
+          <a
+            href="https://github.com/uniquemove/OPMC/releases/latest/download/OPMC-OnePunchMan.apk"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-red-600 to-amber-500 hover:opacity-95 text-white font-black text-sm shadow-lg shadow-red-600/25 transition-all flex items-center justify-center space-x-2"
+          >
+            <Download className="w-5 h-5" />
+            <span>Tải Trực Tiếp File APK (Android)</span>
+          </a>
+
+          <a
+            href="https://github.com/uniquemove/OPMC/actions"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-2.5 rounded-xl bg-gray-800/90 hover:bg-gray-700 text-gray-300 font-semibold text-xs border border-gray-700 transition-all flex items-center justify-center space-x-2"
+          >
+            <span>Xem Tiến Trình Build Online Trên GitHub Actions</span>
+          </a>
+
           <button
             onClick={onClose}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-red-600 to-amber-500 hover:opacity-95 text-white font-black text-sm shadow-lg shadow-red-600/25 transition-all flex items-center justify-center space-x-2"
+            className="w-full py-2 text-gray-400 hover:text-white text-xs text-center transition-colors"
           >
-            <Download className="w-4 h-4" />
-            <span>Đã Hiểu • Bắt Đầu Sử Dụng</span>
+            Đóng cửa sổ
           </button>
         </div>
       </div>

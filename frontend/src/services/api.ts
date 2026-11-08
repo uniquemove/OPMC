@@ -11,11 +11,11 @@ const isDevBrowser = !inApp && typeof window !== 'undefined' &&
 
 const defaultBackendUrl = isDevBrowser 
   ? 'http://localhost:5000/api' 
-  : 'https://one-punch-man-challenge.onrender.com/api';
+  : 'https://opmc.onrender.com/api';
 
 const defaultWsUrl = isDevBrowser 
   ? 'ws://localhost:8000/ws/workout' 
-  : 'wss://opm-challenge-ai-service.onrender.com/ws/workout';
+  : 'wss://opmc-ai-service.onrender.com/ws/workout';
 
 function cleanApiUrl(raw?: string): string {
   let u = (raw || '').trim();

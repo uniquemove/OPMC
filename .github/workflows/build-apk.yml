@@ -1,0 +1,91 @@
+name: Build Android APK Online
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+
+      - name: Install Frontend Dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Build Web App with Render Cloud Backend URLs
+        working-directory: ./frontend
+        env:
+          VITE_API_URL: https://opmc.onrender.com/api
+          VITE_AI_WS_URL: wss://opmc-ai-service.onrender.com/ws/workout
+        run: |
+          npm run build
+          npx cap sync android
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant Execute Permission to Gradlew
+        run: chmod +x frontend/android/gradlew
+
+      - name: Build Debug APK with Gradle
+        working-directory: ./frontend/android
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Prepare APK for Artifact & Release
+        run: |
+          mkdir -p build-output
+          cp frontend/android/app/build/outputs/apk/debug/app-debug.apk build-output/OPMC-OnePunchMan.apk
+
+      - name: Upload APK as Workflow Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OPMC-OnePunchMan-APK
+          path: build-output/OPMC-OnePunchMan.apk
+          retention-days: 30
+
+      - name: Create or Update GitHub Release with APK
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: v1.0.0
+          name: "OPMC Android APK Release v1.0.0"
+          body: |
+            🥊 **One Punch Man Challenge (OPMC) Mobile App**
+            
+            Ứng dụng luyện tập Saitama 100 Push-ups, 100 Sit-ups, 100 Squats và 10km GPS Run kết hợp AI Computer Vision.
+            
+            ### 📱 Cài Đặt
+            - Tải file `OPMC-OnePunchMan.apk` bên dưới về điện thoại Android và mở cài đặt.
+            
+            ### ☁️ Cloud Endpoints
+            - **Web**: https://opmc-eight.vercel.app
+            - **Backend API**: https://opmc.onrender.com/api
+            - **AI Service**: wss://opmc-ai-service.onrender.com/ws/workout
+          files: build-output/OPMC-OnePunchMan.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
