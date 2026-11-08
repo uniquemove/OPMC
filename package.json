@@ -1,0 +1,25 @@
+{
+  "name": "one-punch-man-challenge",
+  "version": "1.0.0",
+  "description": "One Punch Man Challenge – AI Fitness Tracking & Posture Evaluation App",
+  "scripts": {
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:ai": "cd ai-service && .\\venv\\Scripts\\python main.py",
+    "ai:train": "cd ai-service && .\\venv\\Scripts\\python train.py",
+    "ai:cam-test": "cd ai-service && .\\venv\\Scripts\\python main.py --test-cam pushup",
+    "android:open": "cd frontend && npx cap open android",
+    "android:sync": "cd frontend && npm run build && npx cap sync"
+  },
+  "keywords": [
+    "fitness",
+    "one-punch-man",
+    "mediapipe",
+    "computer-vision",
+    "react",
+    "nodejs",
+    "fastapi"
+  ],
+  "author": "EPU Student",
+  "license": "ISC"
+}

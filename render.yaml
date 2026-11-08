@@ -1,0 +1,29 @@
+services:
+  # 1. Node.js Backend API
+  - type: web
+    name: opm-challenge-backend
+    env: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLOUDINARY_CLOUD_NAME
+        value: dqi97nvvw
+      - key: CLOUDINARY_API_KEY
+        value: "114291396565599"
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+  # 2. Python AI Service (FastAPI - Dockerized for MediaPipe C++ libraries)
+  - type: web
+    name: opm-challenge-ai-service
+    env: docker
+    plan: free
+    rootDir: ai-service
+    dockerfilePath: Dockerfile
+    dockerContext: .
