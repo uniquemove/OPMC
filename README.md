@@ -160,9 +160,9 @@ Dự án đã có sẵn file [render.yaml](render.yaml) để deploy 1-click ho�
    - **Environment Variables:**
      - `DATABASE_URL`: URL Neon PostgreSQL của bạn.
      - `JWT_SECRET`: Khóa bí mật JWT ngẫu nhiên.
-     - `CLOUDINARY_CLOUD_NAME`: `bhwozu3p`
-     - `CLOUDINARY_API_KEY`: `451416761328582`
-     - `CLOUDINARY_API_SECRET`: `eOme6UoFP4KKJycW2wIPsz-cPWE`
+     - `CLOUDINARY_CLOUD_NAME`: `dqi97nvvw`
+     - `CLOUDINARY_API_KEY`: `114291396565599`
+     - `CLOUDINARY_API_SECRET`: `uegBtxB5gk1qhsHsLYEAxmUPFz0`
 
 2. **Deploy AI Service (Python):**
    - Tạo **New Web Service** thứ 2 trên Render trỏ cùng repo.
