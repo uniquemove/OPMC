@@ -146,16 +146,63 @@ export const WorkoutCamera: React.FC = () => {
   const toggleFullscreen = () => {
     if (!isFullscreen) {
       setIsFullscreen(true);
-      if (containerRef.current?.requestFullscreen) {
-        containerRef.current.requestFullscreen().catch(() => {});
+      setViewMode('cover'); // Tự động tràn viền toàn màn hình khi bật Fullscreen
+      try {
+        const elem = (containerRef.current || document.documentElement) as any;
+        if (elem?.requestFullscreen) {
+          elem.requestFullscreen().catch(() => {});
+        } else if (elem?.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        } else if (elem?.msRequestFullscreen) {
+          elem.msRequestFullscreen();
+        }
+      } catch (err) {
+        console.warn('Fullscreen request error:', err);
       }
     } else {
       setIsFullscreen(false);
-      if (document.fullscreenElement && document.exitFullscreen) {
-        document.exitFullscreen().catch(() => {});
+      try {
+        const doc = document as any;
+        if (doc.fullscreenElement && doc.exitFullscreen) {
+          doc.exitFullscreen().catch(() => {});
+        } else if (doc.webkitFullscreenElement && doc.webkitExitFullscreen) {
+          doc.webkitExitFullscreen();
+        }
+      } catch (err) {
+        console.warn('Exit fullscreen error:', err);
       }
     }
   };
+
+  const handleStartFullscreen = async () => {
+    setIsFullscreen(true);
+    setViewMode('cover');
+    if (!isCameraActive) {
+      await startStreaming();
+    }
+    try {
+      const elem = (containerRef.current || document.documentElement) as any;
+      if (elem?.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+      }
+    } catch {}
+  };
+
+  // Đồng bộ trạng thái khi người dùng thoát Fullscreen bằng nút Back của Android
+  useEffect(() => {
+    const handleFsChange = () => {
+      const isDocFs = !!(document.fullscreenElement || (document as any).webkitFullscreenElement);
+      if (!isDocFs && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+    document.addEventListener('fullscreenchange', handleFsChange);
+    document.addEventListener('webkitfullscreenchange', handleFsChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFsChange);
+      document.removeEventListener('webkitfullscreenchange', handleFsChange);
+    };
+  }, [isFullscreen]);
 
   // Switch exercise tab
   const handleSelectExercise = (ex: string) => {
@@ -933,6 +980,20 @@ export const WorkoutCamera: React.FC = () => {
               )}
               <span className="hidden sm:inline">{isVoice ? 'Giọng Đếm' : 'Tắt Giọng'}</span>
             </button>
+
+            {/* Nút bật Camera Full Màn Hình nhanh */}
+            <button
+              onClick={toggleFullscreen}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                isFullscreen
+                  ? 'bg-amber-500 text-black shadow-md'
+                  : 'bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30'
+              }`}
+              title={isFullscreen ? 'Thu nhỏ camera' : 'Bật camera toàn màn hình'}
+            >
+              {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+              <span>{isFullscreen ? 'Thu Nhỏ' : '📱 Full Màn Hình'}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -952,7 +1013,7 @@ export const WorkoutCamera: React.FC = () => {
           ref={containerRef}
           className={`relative bg-black rounded-2xl overflow-hidden border border-gray-800 flex items-center justify-center shadow-2xl transition-all ${
             isFullscreen
-              ? 'fixed inset-0 z-50 rounded-none border-none w-screen h-screen'
+              ? 'fixed inset-0 z-[9999] rounded-none border-none w-screen h-screen h-[100dvh]'
               : 'w-full h-[60vh] min-h-[460px] sm:h-[65vh] sm:min-h-[500px] lg:h-auto lg:aspect-[4/3] lg:col-span-2'
           }`}
         >
@@ -1009,6 +1070,15 @@ export const WorkoutCamera: React.FC = () => {
                 </button>
 
                 <button
+                  onClick={handleStartFullscreen}
+                  className="inline-flex items-center space-x-2 px-5 py-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-black text-sm sm:text-base border border-amber-500/50 shadow-lg shadow-amber-500/10 transition-all cursor-pointer"
+                  title="Bật camera và tự động tràn toàn màn hình điện thoại"
+                >
+                  <Maximize2 className="w-5 h-5" />
+                  <span>📱 Bật Cam Full Màn Hình</span>
+                </button>
+
+                <button
                   onClick={handleTestRep}
                   className="inline-flex items-center space-x-2 px-4 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-amber-400 font-bold text-xs sm:text-sm border border-gray-700 transition-all cursor-pointer"
                 >
@@ -1037,25 +1107,29 @@ export const WorkoutCamera: React.FC = () => {
 
                 {/* Right Top Toolset: Fit/Fill, Zoom In/Out, Flip Camera, Fullscreen */}
                 <div className="flex items-center space-x-1.5 sm:space-x-2">
-                  {/* YouTube View Mode (Fit vs Fill) */}
+                  {/* Switch View Mode: Tràn Viền (Full Màn) vs Vừa Khung (Trọn Thân) */}
                   <button
                     onClick={toggleViewMode}
-                    className="flex items-center space-x-1 bg-black/80 backdrop-blur-md px-2.5 py-1.5 rounded-full border border-white/10 text-xs font-bold text-gray-200 hover:text-white hover:bg-gray-800 transition-all cursor-pointer"
+                    className={`flex items-center space-x-1 px-2.5 py-1.5 rounded-full border text-xs font-bold transition-all cursor-pointer ${
+                      viewMode === 'cover'
+                        ? 'bg-emerald-500/30 border-emerald-500/60 text-emerald-300'
+                        : 'bg-black/80 backdrop-blur-md border-white/10 text-gray-200 hover:text-white hover:bg-gray-800'
+                    }`}
                     title={
                       viewMode === 'contain'
-                        ? 'Đang ở chế độ xem trọn thân (Fit). Nhấn để tràn viền (Cover)'
-                        : 'Đang ở chế độ tràn viền. Nhấn để xem trọn vẹn toàn thân không bị cắt đầu/chân'
+                        ? 'Nhấn để camera tràn toàn màn hình (không có viền đen)'
+                        : 'Nhấn để xem vừa vặn trọn thân'
                     }
                   >
                     {viewMode === 'contain' ? (
                       <>
                         <Expand className="w-3.5 h-3.5 text-amber-400" />
-                        <span className="text-[11px]">Trọn Thân</span>
+                        <span className="text-[11px]">Tràn Viền</span>
                       </>
                     ) : (
                       <>
                         <Shrink className="w-3.5 h-3.5 text-emerald-400" />
-                        <span className="text-[11px]">Tràn Viền</span>
+                        <span className="text-[11px]">Vừa Khung</span>
                       </>
                     )}
                   </button>
@@ -1097,13 +1171,23 @@ export const WorkoutCamera: React.FC = () => {
                   {/* Theater / Fullscreen toggle button */}
                   <button
                     onClick={toggleFullscreen}
-                    className="p-1.5 sm:p-2 rounded-full bg-black/80 backdrop-blur-md border border-white/10 text-white hover:text-amber-400 hover:bg-gray-800 transition-all cursor-pointer"
-                    title={isFullscreen ? 'Thu nhỏ camera' : 'Toàn màn hình như YouTube'}
+                    className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full border text-xs font-bold transition-all cursor-pointer ${
+                      isFullscreen
+                        ? 'bg-red-600 hover:bg-red-500 text-white border-red-500 shadow-lg'
+                        : 'bg-amber-500/25 hover:bg-amber-500/40 text-amber-300 border-amber-500/50 shadow-md'
+                    }`}
+                    title={isFullscreen ? 'Thu nhỏ camera' : 'Bật toàn màn hình điện thoại'}
                   >
                     {isFullscreen ? (
-                      <Minimize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      <>
+                        <Minimize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        <span className="text-[11px]">Thu Nhỏ</span>
+                      </>
                     ) : (
-                      <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      <>
+                        <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        <span className="text-[11px]">Full Cam</span>
+                      </>
                     )}
                   </button>
                 </div>
@@ -1186,14 +1270,28 @@ export const WorkoutCamera: React.FC = () => {
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  {isFullscreen && (
-                    <button
-                      onClick={toggleFullscreen}
-                      className="px-3 py-2 rounded-xl bg-gray-800 text-white font-bold text-xs border border-gray-700 hover:bg-gray-700 transition-all cursor-pointer"
-                    >
-                      Thoát Fullscreen
-                    </button>
-                  )}
+                  <button
+                    onClick={toggleFullscreen}
+                    className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl font-bold text-xs border transition-all cursor-pointer ${
+                      isFullscreen
+                        ? 'bg-red-600/90 hover:bg-red-600 text-white border-red-500 shadow-lg'
+                        : 'bg-gray-900/90 hover:bg-gray-800 text-amber-300 border-amber-500/40 shadow-sm'
+                    }`}
+                    title={isFullscreen ? 'Thoát chế độ toàn màn hình' : 'Bật toàn màn hình điện thoại'}
+                  >
+                    {isFullscreen ? (
+                      <>
+                        <Minimize2 className="w-3.5 h-3.5" />
+                        <span>Thoát Full</span>
+                      </>
+                    ) : (
+                      <>
+                        <Maximize2 className="w-3.5 h-3.5" />
+                        <span>📱 Full Màn</span>
+                      </>
+                    )}
+                  </button>
+
                   <button
                     onClick={saveWorkout}
                     disabled={status.valid_reps === 0}
